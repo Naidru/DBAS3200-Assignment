@@ -11,7 +11,7 @@ def generate_initial_dish_list():
         try:
             list_of_dishes = json.loads(file_contents)
         except json.JSONDecodeError as e:
-            print(f"Error: A JSON error occured: {e}")
+            print(f"Error: A JSON error occurred: {e}")
             print("Do you want to regenerate the dish list? (y/n)")
             while True:
                 regenerate_selection = input().lower().strip()
