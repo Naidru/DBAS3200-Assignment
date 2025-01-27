@@ -1,6 +1,6 @@
 import json
 
-def generate_initial_dish_list():
+def get_dish_list():
     try:
         # Open the file using the `with` statement
         # The `open()` function is called with mode 'r' (read mode).

@@ -2,7 +2,7 @@ import dish_list_get_functions as get
 import dish_list_modify_functions as modify
 import dish_list
 
-dishes = dish_list.generate_initial_dish_list()
+dishes = dish_list.get_dish_list()
 
 def main():
     while True:
