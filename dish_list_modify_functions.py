@@ -1,13 +1,6 @@
-try:
-    import errors as err
-    import utilities as util
-    import dish_individual_modification as ind
-except ModuleNotFoundError:
-    print("An error occurred trying to load the following modules:")
-    print("- errors")
-    print("- utilities")
-    print(" - dish_individual_modification_comp")
-    print("Please ensure that these modules are in the file system next to main.py")
+import errors as err
+import utilities as util
+import dish_individual_modification as ind
 
 def add_new_dish(dishes):
     dish_name = input("Enter dish name: ")
@@ -63,7 +56,3 @@ def modify_existing_dish(dishes):
         ind.remove_ingredients_from_dish(dishes, dish_name)
     elif modify_menu_selection == "5":
         return
-
-if __name__ == "__main__":
-    print("Woah there!")
-    print("This file shouldn't be ran directly as this is a helper/module for main.py")

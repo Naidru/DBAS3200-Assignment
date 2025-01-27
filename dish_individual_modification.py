@@ -1,11 +1,5 @@
-try:
-    import errors as err
-    import utilities as util
-except ModuleNotFoundError:
-    print("An error occurred trying to load the following modules:")
-    print("- errors")
-    print("- utilities")
-    print("Please ensure that these modules are in the file system next to main.py")
+import errors as err
+import utilities as util
 
 def change_existing_dish_name(dishes, dish_name):
     new_name = input("Enter new dish name: ")
@@ -60,7 +54,3 @@ def remove_ingredients_from_dish(dishes, dish_name):
         print(f"Removed ingredients.")
         return
     err.error_handling(1,f"Tried searching for {dish_name} but could not find it?")
-
-if __name__ == "__main__":
-    print("Woah there!")
-    print("This file shouldn't be ran directly as this is a helper/module for main.py")

@@ -1,11 +1,5 @@
-try:
-    import errors as err
-    import utilities as util
-except ModuleNotFoundError:
-    print("An error occurred trying to load the following modules:")
-    print("- errors")
-    print("- utilities")
-    print("Please ensure that these modules are in the file system next to main.py")
+import errors as err
+import utilities as util
 
 def all_dish_names(dishes):
     for dish in dishes:
@@ -54,7 +48,3 @@ def search_dish_by_ingredient(dishes):
         for ingredient in dish["ingredients"]:
             if ingredient == ingredient_to_search:
                 print(f"{dish['name']}")
-
-if __name__ == "__main__":
-    print("Woah there!")
-    print("This file shouldn't be ran directly as this is a helper/module for main.py")

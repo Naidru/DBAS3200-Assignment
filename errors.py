@@ -19,7 +19,3 @@ def error_handling(error_code,error_plain_text):
         print(f"Malformed data list - Please refer to the errors.py file")
         print({error_plain_text})
         exit()
-
-if __name__ == "__main__":
-    print("Woah there!")
-    print("This file shouldn't be ran directly as this is a helper/module for main.py")
