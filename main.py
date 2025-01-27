@@ -1,13 +1,6 @@
-try:
-    import dish_list_get_functions as get
-    import dish_list_modify_functions as modify
-    import dish_list
-except ModuleNotFoundError:
-    print("An error occurred trying to load the following modules:")
-    print("- dish_list_get_functions")
-    print("- dish_list_modify_functions")
-    print("- dish_list")
-    print("Please ensure that these modules are in the file system next to main.py")
+import dish_list_get_functions as get
+import dish_list_modify_functions as modify
+import dish_list
 
 dishes = dish_list.generate_initial_dish_list()
 
@@ -24,7 +17,8 @@ def main():
         print("5 - Remove a Dish by Name")
         print("6 - Modify a Dish by Name")
         print("7 - Search Dishes by Ingredient")
-        print("8 - Exit")
+        print("8 - Save and Exit")
+        print("9 - Exit without Saving")
         menu_selection = input("Select an option: ")
         if menu_selection == "1":
             get.all_dish_names(dishes)
@@ -41,7 +35,13 @@ def main():
         elif menu_selection == "7":
             get.search_dish_by_ingredient(dishes)
         elif menu_selection == "8":
+            dish_list.save_dish_list(dishes)
             exit()
+        elif menu_selection == "9":
+            print("Are you sure you want to exit without saving? (y/n)")
+            confirm_selection = input().lower().strip()
+            if confirm_selection == "y":
+                exit()
 
 
 

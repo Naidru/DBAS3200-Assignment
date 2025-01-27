@@ -8,7 +8,20 @@ def generate_initial_dish_list():
             # At this point, the file is open and can be read.
             # When the `with` block ends, the file is automatically closed.
             file_contents = file.read()
-        list_of_dishes = json.loads(file_contents)
+        try:
+            list_of_dishes = json.loads(file_contents)
+        except json.JSONDecodeError as e:
+            print(f"Error: A JSON error occured: {e}")
+            print("Do you want to regenerate the dish list? (y/n)")
+            while True:
+                regenerate_selection = input().lower().strip()
+                if regenerate_selection == "y":
+                    list_of_dishes = []
+                    break
+                elif regenerate_selection == "n":
+                    exit()
+                print("Invalid selection!")
+
         return list_of_dishes
 
             # No need to manually close the file here — `with` takes care of it!
@@ -30,5 +43,19 @@ def generate_initial_dish_list():
             exit()
     except IOError as e:
         # This block handles other input/output errors, such as permissions issues
+        print(f"Error: An I/O error occurred: {e}")
+        exit()
+
+def save_dish_list(dishes):
+    try:
+        # Open the file in write mode
+        with open("dish_list", "w") as file:
+            # Writing content to the file
+            file.write(str(dishes))
+            print("Data successfully saved.")
+
+        # After the `with` block, the file is automatically closed.
+    except IOError as e:
+        # Handles any I/O-related errors (e.g., disk issues or permissions errors)
         print(f"Error: An I/O error occurred: {e}")
         exit()
