@@ -1,10 +1,10 @@
 import errors as err
-import utilities as util
+import dish_list_get_functions as get
 import dish_individual_modification as ind
 
 def add_new_dish(dishes):
     dish_name = input("Enter dish name: ")
-    dish = util.search_for_dish(dish_name, dishes)
+    dish = get.search_for_dish(dish_name, dishes)
     if dish is not False:
             print("Dish name already exists.")
             return
@@ -25,7 +25,7 @@ def add_new_dish(dishes):
 
 def remove_existing_dish(dishes):
     dish_name = input("Enter the name of the dish to remove: ")
-    dish = util.search_for_dish(dish_name, dishes)
+    dish = get.search_for_dish(dish_name, dishes)
     if dish is not False:
         dishes.remove(dish)
         print(f"Dish {dish_name} removed.")
@@ -35,7 +35,7 @@ def remove_existing_dish(dishes):
 
 def modify_existing_dish(dishes):
     dish_name = input("Enter the name of the dish to modify: ")
-    dish = util.search_for_dish(dish_name, dishes)
+    dish = get.search_for_dish(dish_name, dishes)
     if dish is False:
         err.error_handling(404,dish_name)
         return

@@ -1,9 +1,9 @@
 import errors as err
-import utilities as util
+import dish_list_get_functions as get
 
 def change_existing_dish_name(dishes, dish_name):
     new_name = input("Enter new dish name: ")
-    dish = util.search_for_dish(dish_name, dishes)
+    dish = get.search_for_dish(dish_name, dishes)
     if dish is not False:
         dish["name"] = new_name
         print(f"Dish {dish_name} updated to {new_name}.")
@@ -21,7 +21,7 @@ def update_dish_calorie_count(dishes, dish_name):
                 break
         except ValueError:
             print("Invalid input.")
-    dish = util.search_for_dish(dish_name, dishes)
+    dish = get.search_for_dish(dish_name, dishes)
     if dish is not False:
         old_calories = dish["calories"]
         dish["calories"] = calorie_count
@@ -31,7 +31,7 @@ def update_dish_calorie_count(dishes, dish_name):
 
 def add_ingredients_to_dish(dishes, dish_name):
     ingredients = input("Enter ingredients (Seperated by commas): ").lower().split(",")
-    dish = util.search_for_dish(dish_name, dishes)
+    dish = get.search_for_dish(dish_name, dishes)
     if dish is not False:
         old_ingredients = dish["ingredients"]
         new_ingredients = ingredients + old_ingredients
@@ -42,7 +42,7 @@ def add_ingredients_to_dish(dishes, dish_name):
 
 def remove_ingredients_from_dish(dishes, dish_name):
     ingredients = input("Enter ingredients to remove (Seperated by commas): ").lower().split(",")
-    dish = util.search_for_dish(dish_name, dishes)
+    dish = get.search_for_dish(dish_name, dishes)
     if dish is not False:
         ingredient_list = dish["ingredients"]
         for ingredient in ingredients:

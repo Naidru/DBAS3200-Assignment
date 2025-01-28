@@ -1,13 +1,19 @@
 import errors as err
-import utilities as util
+
 
 def all_dish_names(dishes):
     for dish in dishes:
         print(dish["name"])
 
+def search_for_dish(dish_name,dishes):
+    for dish in dishes:
+        if dish["name"].lower() == dish_name.lower():
+            return dish
+    return False
+
 def dish_details_by_name(dishes):
     dish_name = input("Enter dish name: ").lower()
-    dish = util.search_for_dish(dish_name,dishes)
+    dish = search_for_dish(dish_name,dishes)
     if dish is not False:
         print(f"Name: {dish['name']}")
         print(f"Calories: {dish['calories']}")
