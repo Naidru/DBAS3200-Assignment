@@ -69,6 +69,7 @@
 # Encapsulate the main program logic (including the menu loop) in a main() function.
 # Entry Point:
 # Ensure the program starts by calling the main() function within an if __name__ == '__main__': block.
+import file_loader as loader
 
 
 class Book:
@@ -82,6 +83,13 @@ class Book:
         print(f"Author: {self.author}")
         print(f"Year Published: {self.year_published}")
         print()
+
+    def get_year(self):
+        return self.year_published
+
+    def get_author(self):
+        return self.author
+
 
 class Library:
     def __init__(self):
@@ -102,6 +110,13 @@ class Library:
         else:
             print("Book(s) with that title have been removed.")
 
+    def get_book_list(self):
+        return self.books
+
+    def overwrite_book_list(self, book_list):
+        self.books = book_list
+
+
 def new_book():
     book_title = input("Enter name of book: ")
     book_author = input("Enter author of book: ")
@@ -116,28 +131,69 @@ def new_book():
                 print("Please input a valid 4-digit number.")
     library.create(book_title, book_author, book_year_published)
 
+
 def remove_book():
     book_name = input("Enter name of book to remove: ")
     library.delete(book_name)
+
 
 def show_all_books():
     for book in library.books:
         book.describe()
 
+
 def filter_books_by_year_published():
-    print()
-    # Implement filtering logic here
+    book_found = False
+    while True:
+        year_to_search = input("Enter year to search: ")
+        if not year_to_search.isdigit():
+            print("Please input a number to be a year.")
+        else:
+            if 0 <= int(year_to_search) <= 9999:
+                break
+            else:
+                print("Please input a valid 4-digit number.")
+    for book in library.books:
+        if int(book.year_published) == int(year_to_search):
+            book_found = True
+            book.describe()
+    if book_found is False:
+        print("No book with the specified year found.")
+
+
+def filter_books_by_author():
+    book_found = False
+    author_to_search = input("Enter name of author to search: ")
+    for book in library.books:
+        if book.get_author().lower().strip() == author_to_search.lower().strip():
+            book_found = True
+            book.describe()
+    if book_found is False:
+        print("No book with the specified author found.")
+
+
+def initialize_library():
+    global library
+    book_list = loader.get_data()
+    library = Library()
+    library.overwrite_book_list(book_list)
+
+
+def save_library():
+    book_list = Library.get_book_list
+    loader.save_data(book_list)
+
 
 def main():
-    global library
-    library = Library()
+    initialize_library()
     print("Library Management Program")
     print("Please select a valid option!")
     print("1 - Add New Book")
     print("2 - Remove a Book")
     print("3 - Show all Books")
-    print("4 - Filter Books by Year Published")  # Corrected option number
-    print("5 - Exit")  # Added an exit option
+    print("4 - Filter Books by Year Published")
+    print("5 - Exit and Save")
+    print("6 - Exit without Saving")
     while True:
         menu_selection = input("Selection: ").strip().lower()
         if menu_selection == "1":
@@ -146,12 +202,14 @@ def main():
             remove_book()
         elif menu_selection == "3":
             show_all_books()
-        elif menu_selection == "4":  # Corrected option number
+        elif menu_selection == "4":
             filter_books_by_year_published()
         elif menu_selection == "5":
+            save_library()
             break
         else:
             print("Invalid selection. Please try again.")
+
 
 if __name__ == "__main__":
     main()
