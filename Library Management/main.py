@@ -139,6 +139,13 @@ def main():
         elif menu_selection == "5":
             save_library()
             break
+        elif menu_selection == "6":
+            print("Are you sure you want to exit without saving?")
+            confirm = input("(Y)es/(N)o: ").lower().strip()
+            if confirm == "y" or confirm == "yes":
+                print("Exiting without saving...")
+                break
+            print("Returning to menu.")
         else:
             print("Invalid selection. Please try again.")
 
