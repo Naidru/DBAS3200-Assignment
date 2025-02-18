@@ -1,74 +1,4 @@
-# Requirements:
-    #
-    # 2. Define a Library Class
-    # Class Name: Library
-    # Purpose:
-    # Since there will be only one library for your program, the Library class is used to logically isolate all operations required for managing your application's data.
-    # Responsibilities:
-    # The class should provide functionality for:
-    # Managing the collection of books (for example, storing all the Book objects in a list).
-    # Adding a book to the collection.
-    # Removing a book from the collection based on its title.
-    # Showing all books in the collection.
-    # Filtering books by publication year.
-    # Searching for books by author.
-    # Handling persistent storage:
-    # Loading Data: On startup, the class should load the list of books from a file (e.g., library.json or library.txt).
-    # Saving Data: After any modification (or before program exit), the class should save the current list of books back to the file.
-    # Implementation Note:
-    # Decide for each of the operations whether it makes sense to implement them as static (class-level) methods/fields or as instance methods/fields. The design choice is up to you based on the guidance that the class is used for central data management, rather than representing multiple instances.
-# 3. Persistent Storage
-# File Storage:
-# On Startup:
-# The program should load the library's book data from persistent storage.
-# On Modification or Exit:
-# Whenever the library is modified (e.g., when a book is added or removed) or before the program terminates, the library should save the current list of books to the file.
-# Data Format:
-# You can use a structured format (e.g., JSON, CSV) or a simple text format, as long as each book's information (title, author, year_published) can be stored and later restored into Book objects.
-# Implementation Suggestion:
-# Consider creating helper functions (or methods) such as save_to_file(filename) and load_from_file(filename) within your Library class to manage persistent storage.
-# Include appropriate error handling in case the file does not exist or if the stored data is corrupt.
-# 4. Implement a Menu Loop
-# Design your main program so that it repeatedly presents the following menu options to the user:
-#
-# Add a New Book:
-#
-# Prompt the user to enter the book's title, author, and year published.
-# Create a new Book object with the provided data.
-# Add the new book to the library's collection using the operations provided by your Library class.
-# Update the persistent storage after adding the book.
-# Show All Books:
-#
-# Display the details of every book in the library (for example, by iterating over the collection and calling each book’s describe() method).
-# Filter Books by Year Published:
-#
-# Ask the user to enter a publication year.
-# Display only those books in the library whose year_published matches the given year.
-# Search Books by Author:
-#
-# Ask the user to enter an author's name.
-# Display the books written by that author.
-# Remove a Book:
-#
-# Prompt the user to enter the title of the book they wish to remove.
-# Remove the matching book from the library’s collection.
-# Update the persistent storage after removing the book.
-# Exit:
-#
-# Provide an option (for example, option 0) to exit the program gracefully.
-# Ensure that the library's current state is saved to persistent storage before the program terminates.
-# 5. User Input and Validation
-# Data Conversion:
-# Convert user inputs to the appropriate data types (e.g., converting the year from a string to an integer).
-# Error Handling:
-# Implement error handling to manage invalid inputs (such as non-numeric values when a number is expected or attempting to remove a non-existent book).
-# 6. Program Structure
-# File Organization:
-# Organize your code in a single Python file.
-# Main Function:
-# Encapsulate the main program logic (including the menu loop) in a main() function.
-# Entry Point:
-# Ensure the program starts by calling the main() function within an if __name__ == '__main__': block.
+
 import file_loader as loader
 
 
@@ -84,6 +14,9 @@ class Book:
         print(f"Year Published: {self.year_published}")
         print()
 
+    def get_title(self):
+        return self.title
+
     def get_year(self):
         return self.year_published
 
@@ -95,7 +28,7 @@ class Library:
     def __init__(self):
         self.books = []
 
-    def create(self, book_title, book_author, book_year_published):
+    def create_book(self, book_title, book_author, book_year_published):
         self.books.append(Book(book_title, book_author, book_year_published))
 
     def delete(self, book_title):
@@ -129,7 +62,7 @@ def new_book():
                 break
             else:
                 print("Please input a valid 4-digit number.")
-    library.create(book_title, book_author, book_year_published)
+    library.create_book(book_title, book_author, book_year_published)
 
 
 def remove_book():
@@ -174,14 +107,13 @@ def filter_books_by_author():
 
 def initialize_library():
     global library
-    book_list = loader.get_data()
     library = Library()
+    book_list = loader.get_data()
     library.overwrite_book_list(book_list)
 
 
 def save_library():
-    book_list = Library.get_book_list
-    loader.save_data(book_list)
+    loader.save_data(library)
 
 
 def main():

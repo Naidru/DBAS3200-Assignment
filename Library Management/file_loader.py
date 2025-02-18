@@ -1,65 +1,47 @@
-import json
-import main
-data = "libraries"
+import csv
+from main import Book
+
+data = [
+    ["ID", "Title", "Author", "Year Published"]
+]
+
+filename = "books.csv"
 
 
 def get_data():
+    books = []
     try:
-        # Open the file using the `with` statement
-        # The `open()` function is called with mode 'r' (read mode).
-        with open(data, "r") as file:
-            # At this point, the file is open and can be read.
-            # When the `with` block ends, the file is automatically closed.
-            file_contents = file.read()
-        try:
-            data_list = json.loads(file_contents)
-        except json.JSONDecodeError as e:
-            print(f"Error: A JSON error occurred: {e}")
-            print("Do you want to regenerate the data file? (y/n)")
-            while True:
-                regenerate_selection = input().lower().strip()
-                if regenerate_selection == "y":
-                    data_list = []
-                    break
-                elif regenerate_selection == "n":
-                    exit()
-                print("Invalid selection!")
-
-        return data_list
-
-        # No need to manually close the file here — `with` takes care of it!
+        with open(filename, mode="r", newline="", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                book = Book(row["Title"], row["Author"], row["Year Published"])
+                books.append(book)
     except FileNotFoundError:
-        # This block is executed if the file does not exist
-        print(f"Error: The file {data} does not exist. Creating a new one.")
-        try:
-            # Open the file in write mode
-            with open(data, "w") as file:
-                # Writing content to the file
-                file.write("[]")  # Writes a single line to the file
-                print("Created data file successfully.")
-                return []
-
-            # After the `with` block, the file is automatically closed.
-        except IOError as e:
-            # Handles any I/O-related errors (e.g., disk issues or permissions errors)
-            print(f"Error: An I/O error occurred: {e}")
-            exit()
+        print(f"File '{filename}' not found. Starting with an empty library.")
     except IOError as e:
-        # This block handles other input/output errors, such as permissions issues
-        print(f"Error: An I/O error occurred: {e}")
-        exit()
+        print(f"File error: {e}")
+    return books
 
 
-def save_data(data_to_save):
+def save_data(library):
+    i = 1
+    for book in library.books:
+        data.append([i, book.get_title(), book.get_author(), book.year_published])
+        i += 1
     try:
-        # Open the file in write mode
-        with open(data, "w") as file:
-            # Writing content to the file
-            file.write(str(data_to_save))
-            print("Data successfully saved.")
+        with open(filename, mode="w", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file, quotechar='"', quoting=csv.QUOTE_ALL)
 
-        # After the `with` block, the file is automatically closed.
+            for row in data:
+                try:
+                    writer.writerow(row)  # Writing one row at a time
+                except Exception as e:
+                    print(f"Error writing row {row}: {e}")
+
+        print("Book data saved successfully.")
+
     except IOError as e:
-        # Handles any I/O-related errors (e.g., disk issues or permissions errors)
-        print(f"Error: An I/O error occurred: {e}")
-        exit()
+        print(f"File error: {e}")
+
+    except Exception as e:
+        print(f"Unexpected error: {e}")
