@@ -1,49 +1,73 @@
-import dish_list_get_functions as get
-import dish_list_modify_functions as modify
-import dish_list
+from pymongo import MongoClient
 
-dishes = dish_list.get_dish_list()
+class DatabaseManager:
+    client = MongoClient("mongodb://localhost:27017/")
+    db = client["restaurant"]
+    dishes_collection = db["dishes"]
+    ingredients_collection = db["ingredients"]
+
+    def check_if_item_exist(self, query):
+        query = {"name": query.lower()}
+        documents = list(self.dishes_collection.find(query))
+        if len(documents) == 0:
+            return False
+        else:
+            return True
+
+
+def add_new_dish():
+    dish_name = input("Please input a dish name or type 'back' to go back: ")
+    if dish_name.lower().strip() == "back":
+        return()
+    if database.check_if_item_exist(dish_name):
+        print("This dish already exists.")
+        print()
+        return
+    while True:
+        try:
+            calorie_count = int(input("Enter calories count: "))
+            if calorie_count < 0:
+                print("Calories count cannot be negative.")
+                return
+            else:
+                break
+        except ValueError:
+            print("Invalid input.")
+
+
+global database
+database = DatabaseManager()
 
 def main():
     while True:
-        print()
-        print()
-        print("Restaurant Backend Manager")
-        print("Please select an option")
-        print("1 - View All Dish Names")
-        print("2 - View Dish Details by Name")
-        print("3 - Filter Dishes by Calorie Count")
-        print("4 - Add a New Dish")
-        print("5 - Remove a Dish by Name")
-        print("6 - Modify a Dish by Name")
-        print("7 - Search Dishes by Ingredient")
-        print("8 - Save and Exit")
-        print("9 - Exit without Saving")
-        menu_selection = input("Select an option: ")
-        if menu_selection == "1":
-            get.all_dish_names(dishes)
-        elif menu_selection == "2":
-            get.dish_details_by_name(dishes)
-        elif menu_selection == "3":
-            get.filter_dish_details_by_calorie_count(dishes)
-        elif menu_selection == "4":
-            modify.add_new_dish(dishes)
-        elif menu_selection == "5":
-            modify.remove_existing_dish(dishes)
-        elif menu_selection == "6":
-            modify.modify_existing_dish(dishes)
-        elif menu_selection == "7":
-            get.search_dish_by_ingredient(dishes)
-        elif menu_selection == "8":
-            dish_list.save_dish_list(dishes)
-            exit()
-        elif menu_selection == "9":
-            print("Are you sure you want to exit without saving? (y/n)")
-            confirm_selection = input().lower().strip()
-            if confirm_selection == "y":
-                exit()
-
-
+        print("Restaurant Management Program")
+        print("1 - Create new Dish")
+        print("2 - Update Dish")
+        print("3 - Delete Dish")
+        print("4 - Search Dish by Ingredient")
+        print("5 - Search dish by calorie threshold")
+        print("6 - Show all unique ingredients")
+        print("7 - Exit")
+        menu_select = input().lower().strip()
+        if menu_select == "1":
+            add_new_dish()
+        elif menu_select == "2":
+            print()
+        elif menu_select == "3":
+            print()
+        elif menu_select == "4":
+            print()
+        elif menu_select == "5":
+            print()
+        elif menu_select == "6":
+            print()
+        elif menu_select == "7":
+            break
+        else:
+            print("Invalid menu selection")
+            print()
 
 if __name__ == "__main__":
     main()
+
+
