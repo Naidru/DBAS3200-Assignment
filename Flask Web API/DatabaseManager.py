@@ -1,79 +1,93 @@
 from pymongo import MongoClient
+from bson import ObjectId
 
 class DatabaseManager:
     def __init__(self):
         """
-        Initialize the database connection and get the dishes collection.
+        Initialize the database connection and get the tasks collection.
         """
         self.client = MongoClient("mongodb://localhost:27017/")
-        self.db = self.client["restaurant"]
-        self.dishes_collection = self.db["dishes"]
+        self.db = self.client["taskmanager"]
+        self.tasks_collection = self.db["tasks"]
+        self.counter_collection = self.db["counters"]
+        self.current_id = self._initialize_id_counter()
 
-    def check_if_dish_exists(self, dish_name):
+    def _initialize_id_counter(self):
         """
-        Check if a dish with the given name exists in the database.
-        :param dish_name:
+        Initialize the ID counter from the database.
+        :return: The current ID counter value.
+        """
+        counter = self.counter_collection.find_one({"_id": "task_id"})
+        if counter is None:
+            self.counter_collection.insert_one({"_id": "task_id", "value": 0})
+            return 0
+        return counter["value"]
+
+    def _increment_id_counter(self):
+        """
+        Increment the ID counter in the database.
+        :return: The new ID counter value.
+        """
+        result = self.counter_collection.find_one_and_update(
+            {"_id": "task_id"},
+            {"$inc": {"value": 1}},
+            return_document=True
+        )
+        return result["value"]
+
+    def check_task_exists(self, task_id):
+        """
+        Check if a task with the given title exists in the database.
+        :param task_id:
         :return:
         """
-        query = {"name": dish_name.lower()}
-        return self.dishes_collection.find_one(query)
+        query = {"task_id": task_id}
+        return self.tasks_collection.find_one(query)
 
-    def add_dish(self, dish):
+    def get_all_task(self):
         """
-        Add a new dish to the database.
-        :param dish:
+        Get all tasks from the database.
         :return:
         """
-        dish["name"] = dish["name"].lower()
-        self.dishes_collection.insert_one(dish)
+        tasks = self.tasks_collection.find()
+        return list(tasks)
 
-    def delete_dish(self, dish_name):
+    def add_task(self, task):
         """
-        Delete a dish from the database.
-        :param dish_name:
+        Add a new task to the database.
+        :param task:
         :return:
         """
-        query = {"name": dish_name.lower()}
-        result = self.dishes_collection.delete_one(query)
+        task["task_id"] = self._increment_id_counter()
+        self.tasks_collection.insert_one(task)
+
+    def delete_task(self, task_title):
+        """
+        Delete a task from the database.
+        :param task_title:
+        :return:
+        """
+        query = {"title": task_title.lower()}
+        result = self.tasks_collection.delete_one(query)
         return result.deleted_count
 
-    def update_dish(self, dish_name, update_data):
+    def update_task(self, task_id, update_data):
         """
-        Update an existing dish in the database.
-        :param dish_name:
+        Update an existing task in the database.
+        :param task_id:
         :param update_data:
         :return:
         """
-        query = {"name": dish_name.lower()}
+        query = {"task_id": task_id}
         update = {"$set": update_data}
-        result = self.dishes_collection.update_one(query, update)
+        result = self.tasks_collection.update_one(query, update)
         return result.modified_count
 
-    def search_dishes_by_ingredient(self, ingredient):
-        """
-        Search dishes by ingredient.
-        :param ingredient:
-        :return:
-        """
-        query = {"ingredients": {"$elemMatch": {"$regex": f"^{ingredient}$", "$options": "i"}}}
-        return list(self.dishes_collection.find(query))
-
-    def search_dishes_by_calorie(self, calorie, comparison):
-        """
-        Search dishes by calorie count.
-        :param calorie:
-        :param comparison:
-        :return:
-        """
-        if comparison == "above":
-            query = {"calories": {"$gt": calorie}}
-        else:
-            query = {"calories": {"$lt": calorie}}
-        return list(self.dishes_collection.find(query))
-
-    def list_unique_ingredients(self):
-        """
-        List unique ingredients in the database.
-        :return:
-        """
-        return self.dishes_collection.distinct("ingredients")
+def convert_to_json_serializable(doc):
+    if isinstance(doc, list):
+        return [convert_to_json_serializable(d) for d in doc]
+    if isinstance(doc, dict):
+        return {k: convert_to_json_serializable(v) for k, v in doc.items()}
+    if isinstance(doc, ObjectId):
+        return str(doc)
+    return doc
